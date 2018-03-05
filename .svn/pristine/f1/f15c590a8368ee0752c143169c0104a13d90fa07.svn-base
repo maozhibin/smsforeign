@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cunyun.smsforeign.dal.dao.SmsTagFilesMapper">
+  <resultMap id="BaseResultMap" type="com.cunyun.smsforeign.dal.model.SmsTagFiles">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="tag_id" jdbcType="INTEGER" property="tagId" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_suffix" jdbcType="VARCHAR" property="fileSuffix" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="is_employ" jdbcType="INTEGER" property="isEmploy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, tag_id, file_name, file_suffix, file_path, is_employ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sms_tag_files
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.cunyun.smsforeign.dal.model.SmsTagFiles">
+    insert into sms_tag_files (id, tag_id, file_name, 
+      file_suffix, file_path, is_employ
+      )
+    values (#{id,jdbcType=INTEGER}, #{tagId,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, 
+      #{fileSuffix,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{isEmploy,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cunyun.smsforeign.dal.model.SmsTagFiles">
+    insert into sms_tag_files
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="tagId != null">
+        tag_id,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="fileSuffix != null">
+        file_suffix,
+      </if>
+      <if test="filePath != null">
+        file_path,
+      </if>
+      <if test="isEmploy != null">
+        is_employ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="tagId != null">
+        #{tagId,jdbcType=INTEGER},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSuffix != null">
+        #{fileSuffix,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="isEmploy != null">
+        #{isEmploy,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cunyun.smsforeign.dal.model.SmsTagFiles">
+    update sms_tag_files
+    <set>
+      <if test="tagId != null">
+        tag_id = #{tagId,jdbcType=INTEGER},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSuffix != null">
+        file_suffix = #{fileSuffix,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null">
+        file_path = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="isEmploy != null">
+        is_employ = #{isEmploy,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cunyun.smsforeign.dal.model.SmsTagFiles">
+    update sms_tag_files
+    set tag_id = #{tagId,jdbcType=INTEGER},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_suffix = #{fileSuffix,jdbcType=VARCHAR},
+      file_path = #{filePath,jdbcType=VARCHAR},
+      is_employ = #{isEmploy,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cunyun.smsforeign.dal.dao.SmsSendTaskMapper">
+  <resultMap id="BaseResultMap" type="com.cunyun.smsforeign.dal.model.SmsSendTask">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="task_send_time" jdbcType="TIMESTAMP" property="taskSendTime" />
+    <result column="real_send_time" jdbcType="TIMESTAMP" property="realSendTime" />
+    <result column="is_employ" jdbcType="INTEGER" property="isEmploy" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="ext_video_id" jdbcType="INTEGER" property="extVideoId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cunyun.smsforeign.dal.model.SmsSendTask">
+    <result column="mobiles" jdbcType="LONGVARCHAR" property="mobiles" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, admin_id, order_id, task_send_time, real_send_time, is_employ, title, content, 
+    ext_video_id
+  </sql>
+  <sql id="Blob_Column_List">
+    mobiles
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sms_send_task
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.cunyun.smsforeign.dal.model.SmsSendTask">
+    insert into sms_send_task (id, admin_id, order_id, 
+      task_send_time, real_send_time, is_employ, 
+      title, content, ext_video_id, 
+      mobiles)
+    values (#{id,jdbcType=INTEGER}, #{adminId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, 
+      #{taskSendTime,jdbcType=TIMESTAMP}, #{realSendTime,jdbcType=TIMESTAMP}, #{isEmploy,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{extVideoId,jdbcType=INTEGER}, 
+      #{mobiles,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cunyun.smsforeign.dal.model.SmsSendTask">
+    insert into sms_send_task
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="adminId != null">
+        admin_id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="taskSendTime != null">
+        task_send_time,
+      </if>
+      <if test="realSendTime != null">
+        real_send_time,
+      </if>
+      <if test="isEmploy != null">
+        is_employ,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="extVideoId != null">
+        ext_video_id,
+      </if>
+      <if test="mobiles != null">
+        mobiles,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="adminId != null">
+        #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="taskSendTime != null">
+        #{taskSendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="realSendTime != null">
+        #{realSendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEmploy != null">
+        #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="extVideoId != null">
+        #{extVideoId,jdbcType=INTEGER},
+      </if>
+      <if test="mobiles != null">
+        #{mobiles,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cunyun.smsforeign.dal.model.SmsSendTask">
+    update sms_send_task
+    <set>
+      <if test="adminId != null">
+        admin_id = #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="taskSendTime != null">
+        task_send_time = #{taskSendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="realSendTime != null">
+        real_send_time = #{realSendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEmploy != null">
+        is_employ = #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="extVideoId != null">
+        ext_video_id = #{extVideoId,jdbcType=INTEGER},
+      </if>
+      <if test="mobiles != null">
+        mobiles = #{mobiles,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cunyun.smsforeign.dal.model.SmsSendTask">
+    update sms_send_task
+    set admin_id = #{adminId,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=INTEGER},
+      task_send_time = #{taskSendTime,jdbcType=TIMESTAMP},
+      real_send_time = #{realSendTime,jdbcType=TIMESTAMP},
+      is_employ = #{isEmploy,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      ext_video_id = #{extVideoId,jdbcType=INTEGER},
+      mobiles = #{mobiles,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cunyun.smsforeign.dal.model.SmsSendTask">
+    update sms_send_task
+    set admin_id = #{adminId,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=INTEGER},
+      task_send_time = #{taskSendTime,jdbcType=TIMESTAMP},
+      real_send_time = #{realSendTime,jdbcType=TIMESTAMP},
+      is_employ = #{isEmploy,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      ext_video_id = #{extVideoId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

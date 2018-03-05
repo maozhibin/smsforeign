@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出。
+-->
+<!--
+	monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数。
+-->
+<Configuration monitorInterval="30" status="OFF" strict="true">
+
+    <Properties>
+        <Property name="log.home">/logs/zone-admin</Property>
+        <Property name="layout.pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %content%n</Property>
+        <property name="output_log_level">info</property><!-- 日志输出级别 -->
+    </Properties>
+
+    <Appenders>
+
+        <RollingRandomAccessFile fileName="${log.home}/info.log"
+                                 filePattern="${log.home}/info.log.%d{yyyy-MM-dd}"
+                                 name="INFO">
+            <PatternLayout pattern="${layout.pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${log.home}" maxDepth="1">
+                    <IfFileName glob="namesrv.*"/>
+                    <IfLastModified age="7d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile fileName="${log.home}/error.log"
+                                 filePattern="${log.home}/error.log.%d{yyyy-MM-dd}"
+                                 name="ERROR">
+            <PatternLayout pattern="${layout.pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${log.home}" maxDepth="1">
+                    <IfFileName glob="error.*"/>
+                    <IfLastModified age="7d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l %msg%n"/>
+        </Console>
+    </Appenders>
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <Loggers>
+
+        <!-- 将业务dao接口填写进去,并用控制台输出即可 -->
+        <logger name="com.cunyun.smsforeign.dal.dao" level="TRACE" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+
+        <logger name="com.cunyun.smsforeign" level="info" additivity="false">
+            <appender-ref ref="DEBUG"/>
+        </logger>
+
+        <Root level="${output_log_level}">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="INFO"/>
+            <appender-ref ref="ERROR"/>
+            <!--<appender-ref ref="DEBUG"/>-->
+        </Root>
+    </Loggers>
+</Configuration>

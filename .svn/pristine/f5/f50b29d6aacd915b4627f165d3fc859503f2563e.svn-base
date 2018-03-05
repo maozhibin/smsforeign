@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cunyun.smsforeign.dal.dao.AccountRoleRefMapper">
+  <resultMap id="BaseResultMap" type="com.cunyun.smsforeign.dal.model.AccountRoleRef">
+    <id column="account_role_id" jdbcType="INTEGER" property="accountRoleId" />
+    <result column="account_id" jdbcType="INTEGER" property="accountId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    account_role_id, account_id, role_id, created_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from account_role_ref
+    where account_role_id = #{accountRoleId,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.cunyun.smsforeign.dal.model.AccountRoleRef">
+    insert into account_role_ref (account_role_id, account_id, role_id, 
+      created_time)
+    values (#{accountRoleId,jdbcType=INTEGER}, #{accountId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, 
+      #{createdTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cunyun.smsforeign.dal.model.AccountRoleRef">
+    insert into account_role_ref
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="accountRoleId != null">
+        account_role_id,
+      </if>
+      <if test="accountId != null">
+        account_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="accountRoleId != null">
+        #{accountRoleId,jdbcType=INTEGER},
+      </if>
+      <if test="accountId != null">
+        #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cunyun.smsforeign.dal.model.AccountRoleRef">
+    update account_role_ref
+    <set>
+      <if test="accountId != null">
+        account_id = #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where account_role_id = #{accountRoleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cunyun.smsforeign.dal.model.AccountRoleRef">
+    update account_role_ref
+    set account_id = #{accountId,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=TIMESTAMP}
+    where account_role_id = #{accountRoleId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cunyun.smsforeign.dal.dao.SmsMessageSendOrderRefuseMapper">
+  <resultMap id="BaseResultMap" type="com.cunyun.smsforeign.dal.model.SmsMessageSendOrderRefuse">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="cause" jdbcType="VARCHAR" property="cause" />
+    <result column="is_employ" jdbcType="INTEGER" property="isEmploy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="steps" jdbcType="VARCHAR" property="steps" />
+    <result column="confirm_content" jdbcType="VARCHAR" property="confirmContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_id, cause, is_employ, updated_time, admin_id, steps, confirm_content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sms_message_send_order_refuse
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.cunyun.smsforeign.dal.model.SmsMessageSendOrderRefuse">
+    insert into sms_message_send_order_refuse (id, order_id, cause, 
+      is_employ, updated_time, admin_id, 
+      steps, confirm_content)
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{cause,jdbcType=VARCHAR}, 
+      #{isEmploy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, #{adminId,jdbcType=INTEGER}, 
+      #{steps,jdbcType=VARCHAR}, #{confirmContent,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cunyun.smsforeign.dal.model.SmsMessageSendOrderRefuse">
+    insert into sms_message_send_order_refuse
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="cause != null">
+        cause,
+      </if>
+      <if test="isEmploy != null">
+        is_employ,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="adminId != null">
+        admin_id,
+      </if>
+      <if test="steps != null">
+        steps,
+      </if>
+      <if test="confirmContent != null">
+        confirm_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="cause != null">
+        #{cause,jdbcType=VARCHAR},
+      </if>
+      <if test="isEmploy != null">
+        #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adminId != null">
+        #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="steps != null">
+        #{steps,jdbcType=VARCHAR},
+      </if>
+      <if test="confirmContent != null">
+        #{confirmContent,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cunyun.smsforeign.dal.model.SmsMessageSendOrderRefuse">
+    update sms_message_send_order_refuse
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="cause != null">
+        cause = #{cause,jdbcType=VARCHAR},
+      </if>
+      <if test="isEmploy != null">
+        is_employ = #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adminId != null">
+        admin_id = #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="steps != null">
+        steps = #{steps,jdbcType=VARCHAR},
+      </if>
+      <if test="confirmContent != null">
+        confirm_content = #{confirmContent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cunyun.smsforeign.dal.model.SmsMessageSendOrderRefuse">
+    update sms_message_send_order_refuse
+    set order_id = #{orderId,jdbcType=INTEGER},
+      cause = #{cause,jdbcType=VARCHAR},
+      is_employ = #{isEmploy,jdbcType=INTEGER},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      admin_id = #{adminId,jdbcType=INTEGER},
+      steps = #{steps,jdbcType=VARCHAR},
+      confirm_content = #{confirmContent,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

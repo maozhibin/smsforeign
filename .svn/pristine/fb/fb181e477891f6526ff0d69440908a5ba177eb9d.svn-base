@@ -1,0 +1,8 @@
+package com.cunyun.smsforeign.common;
+
+/**
+ * 短信平台code
+ */
+public class SmsPlatformCode {
+    public static final String SUN_JIAN_CODE = "000001";
+}

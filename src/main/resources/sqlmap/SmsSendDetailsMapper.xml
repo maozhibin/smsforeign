@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cunyun.smsforeign.dal.dao.SmsSendDetailsMapper">
+  <resultMap id="BaseResultMap" type="com.cunyun.smsforeign.dal.model.SmsSendDetails">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="task_send_time" jdbcType="TIMESTAMP" property="taskSendTime" />
+    <result column="real_send_time" jdbcType="TIMESTAMP" property="realSendTime" />
+    <result column="is_send" jdbcType="INTEGER" property="isSend" />
+    <result column="is_employ" jdbcType="INTEGER" property="isEmploy" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="ext_video_id" jdbcType="INTEGER" property="extVideoId" />
+    <result column="post_time" jdbcType="INTEGER" property="postTime" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="cost" jdbcType="DECIMAL" property="cost" />
+    <result column="characteristic" jdbcType="VARCHAR" property="characteristic" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, admin_id, task_send_time, real_send_time, is_send, is_employ, mobile, content, 
+    ext_video_id, post_time, supplier_code, cost
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sms_send_details
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.cunyun.smsforeign.dal.model.SmsSendDetails">
+    insert into sms_send_details (id, admin_id,create_time, task_send_time,
+      real_send_time, is_send, is_employ, 
+      mobile, content, ext_video_id, 
+      post_time, supplier_code, cost
+      )
+    values (#{id,jdbcType=INTEGER}, #{adminId,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},  #{taskSendTime,jdbcType=TIMESTAMP},
+      #{realSendTime,jdbcType=TIMESTAMP}, #{isSend,jdbcType=INTEGER}, #{isEmploy,jdbcType=INTEGER}, 
+      #{mobile,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{extVideoId,jdbcType=INTEGER}, 
+      #{postTime,jdbcType=INTEGER}, #{supplierCode,jdbcType=VARCHAR}, #{cost,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cunyun.smsforeign.dal.model.SmsSendDetails">
+    insert into sms_send_details
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="adminId != null">
+        admin_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="taskSendTime != null">
+        task_send_time,
+      </if>
+      <if test="realSendTime != null">
+        real_send_time,
+      </if>
+      <if test="isSend != null">
+        is_send,
+      </if>
+      <if test="isEmploy != null">
+        is_employ,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="extVideoId != null">
+        ext_video_id,
+      </if>
+      <if test="postTime != null">
+        post_time,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="cost != null">
+        cost,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="adminId != null">
+        #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskSendTime != null">
+        #{taskSendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="realSendTime != null">
+        #{realSendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isSend != null">
+        #{isSend,jdbcType=INTEGER},
+      </if>
+      <if test="isEmploy != null">
+        #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="extVideoId != null">
+        #{extVideoId,jdbcType=INTEGER},
+      </if>
+      <if test="postTime != null">
+        #{postTime,jdbcType=INTEGER},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cost != null">
+        #{cost,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cunyun.smsforeign.dal.model.SmsSendDetails">
+    update sms_send_details
+    <set>
+      <if test="adminId != null">
+        admin_id = #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskSendTime != null">
+        task_send_time = #{taskSendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="realSendTime != null">
+        real_send_time = #{realSendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isSend != null">
+        is_send = #{isSend,jdbcType=INTEGER},
+      </if>
+      <if test="isEmploy != null">
+        is_employ = #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="extVideoId != null">
+        ext_video_id = #{extVideoId,jdbcType=INTEGER},
+      </if>
+      <if test="postTime != null">
+        post_time = #{postTime,jdbcType=INTEGER},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cost != null">
+        cost = #{cost,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cunyun.smsforeign.dal.model.SmsSendDetails">
+    update sms_send_details
+    set admin_id = #{adminId,jdbcType=INTEGER},
+      create_time =#{createtime,jdbcType=TIMESTAMP},
+      task_send_time = #{taskSendTime,jdbcType=TIMESTAMP},
+      real_send_time = #{realSendTime,jdbcType=TIMESTAMP},
+      is_send = #{isSend,jdbcType=INTEGER},
+      is_employ = #{isEmploy,jdbcType=INTEGER},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      ext_video_id = #{extVideoId,jdbcType=INTEGER},
+      post_time = #{postTime,jdbcType=INTEGER},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      cost = #{cost,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <insert id="insertByBatch" parameterType="java.util.List">
+    insert into sms_send_details (admin_id, create_time,is_send,is_employ,mobile,content,supplier_code,cost,characteristic)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.adminId,jdbcType=INTEGER}, #{item.createTime,jdbcType=TIMESTAMP},#{item.isSend,jdbcType=INTEGER},
+      #{item.isEmploy,jdbcType=INTEGER}, #{item.mobile,jdbcType=VARCHAR},#{item.content,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.cost,jdbcType=DECIMAL}, #{item.characteristic,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+
+  <select id="queryNoSendSmsCharacteristic" resultType="string">
+    SELECT
+        characteristic
+    FROM
+        sms_send_details
+    WHERE
+        supplier_code =#{code}
+    AND characteristic IS NOT NULL
+    AND is_send =0
+    AND assessor = 1
+    GROUP BY characteristic
+  </select>
+
+  <select id="queryByCharacteristic" resultMap="BaseResultMap">
+    SELECT
+        *
+    FROM
+        sms_send_details
+    WHERE
+        supplier_code = #{code}
+    AND characteristic IS NOT NULL
+    AND is_send = 0
+    AND assessor = 1
+    AND characteristic = #{characteristic}
+  </select>
+
+  <update id="updatebByCharacteristicAndCode">
+    update sms_send_details
+      SET
+        assessor =2,
+        is_send =1
+     WHERE
+        supplier_code = #{code}
+     AND characteristic = #{characteristic}
+  </update>
+
+  <select id="queryBymsId" resultMap="BaseResultMap">
+
+     SELECT
+        *
+    FROM
+        sms_send_details
+    WHERE
+        characteristic = #{msId}
+    AND is_employ = 0
+  </select>
+</mapper>

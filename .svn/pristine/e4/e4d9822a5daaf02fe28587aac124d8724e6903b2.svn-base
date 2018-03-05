@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cunyun.smsforeign.dal.dao.SmsTagMapper">
+  <resultMap id="BaseResultMap" type="com.cunyun.smsforeign.dal.model.SmsTag">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="tag_name" jdbcType="VARCHAR" property="tagName" />
+    <result column="tag_num" jdbcType="INTEGER" property="tagNum" />
+    <result column="tag_introduce" jdbcType="VARCHAR" property="tagIntroduce" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="tage_type_id" jdbcType="INTEGER" property="tageTypeId" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="sell_price" jdbcType="DECIMAL" property="sellPrice" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="is_employ" jdbcType="INTEGER" property="isEmploy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, admin_id, tag_name, tag_num, tag_introduce, state, reason, tage_type_id, price, 
+    sell_price, created_time, updated_time, is_employ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sms_tag
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.cunyun.smsforeign.dal.model.SmsTag">
+    insert into sms_tag (id, admin_id, tag_name, 
+      tag_num, tag_introduce, state, 
+      reason, tage_type_id, price, 
+      sell_price, created_time, updated_time, 
+      is_employ)
+    values (#{id,jdbcType=INTEGER}, #{adminId,jdbcType=INTEGER}, #{tagName,jdbcType=VARCHAR}, 
+      #{tagNum,jdbcType=INTEGER}, #{tagIntroduce,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
+      #{reason,jdbcType=VARCHAR}, #{tageTypeId,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, 
+      #{sellPrice,jdbcType=DECIMAL}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{isEmploy,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cunyun.smsforeign.dal.model.SmsTag">
+    insert into sms_tag
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="adminId != null">
+        admin_id,
+      </if>
+      <if test="tagName != null">
+        tag_name,
+      </if>
+      <if test="tagNum != null">
+        tag_num,
+      </if>
+      <if test="tagIntroduce != null">
+        tag_introduce,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="tageTypeId != null">
+        tage_type_id,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="sellPrice != null">
+        sell_price,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="isEmploy != null">
+        is_employ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="adminId != null">
+        #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="tagName != null">
+        #{tagName,jdbcType=VARCHAR},
+      </if>
+      <if test="tagNum != null">
+        #{tagNum,jdbcType=INTEGER},
+      </if>
+      <if test="tagIntroduce != null">
+        #{tagIntroduce,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="tageTypeId != null">
+        #{tageTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="sellPrice != null">
+        #{sellPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEmploy != null">
+        #{isEmploy,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cunyun.smsforeign.dal.model.SmsTag">
+    update sms_tag
+    <set>
+      <if test="adminId != null">
+        admin_id = #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="tagName != null">
+        tag_name = #{tagName,jdbcType=VARCHAR},
+      </if>
+      <if test="tagNum != null">
+        tag_num = #{tagNum,jdbcType=INTEGER},
+      </if>
+      <if test="tagIntroduce != null">
+        tag_introduce = #{tagIntroduce,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="tageTypeId != null">
+        tage_type_id = #{tageTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="sellPrice != null">
+        sell_price = #{sellPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEmploy != null">
+        is_employ = #{isEmploy,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cunyun.smsforeign.dal.model.SmsTag">
+    update sms_tag
+    set admin_id = #{adminId,jdbcType=INTEGER},
+      tag_name = #{tagName,jdbcType=VARCHAR},
+      tag_num = #{tagNum,jdbcType=INTEGER},
+      tag_introduce = #{tagIntroduce,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      reason = #{reason,jdbcType=VARCHAR},
+      tage_type_id = #{tageTypeId,jdbcType=INTEGER},
+      price = #{price,jdbcType=DECIMAL},
+      sell_price = #{sellPrice,jdbcType=DECIMAL},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      is_employ = #{isEmploy,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

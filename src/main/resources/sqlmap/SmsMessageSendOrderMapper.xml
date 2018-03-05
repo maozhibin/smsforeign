@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cunyun.smsforeign.dal.dao.SmsMessageSendOrderMapper">
+  <resultMap id="BaseResultMap" type="com.cunyun.smsforeign.dal.model.SmsMessageSendOrder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="tag_id" jdbcType="INTEGER" property="tagId" />
+    <result column="channel_id" jdbcType="INTEGER" property="channelId" />
+    <result column="customer_id" jdbcType="INTEGER" property="customerId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+    <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="file_url" jdbcType="VARCHAR" property="fileUrl" />
+    <result column="statue" jdbcType="INTEGER" property="statue" />
+    <result column="is_employ" jdbcType="INTEGER" property="isEmploy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="confirm_content" jdbcType="VARCHAR" property="confirmContent" />
+    <result column="cause" jdbcType="VARCHAR" property="cause" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, tag_id, channel_id, customer_id, title, content, msg_type, video_url, image_url, 
+    file_url, statue, is_employ, created_time, updated_time, confirm_content, cause
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sms_message_send_order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.cunyun.smsforeign.dal.model.SmsMessageSendOrder">
+    insert into sms_message_send_order (id, tag_id, channel_id, 
+      customer_id, title, content, 
+      msg_type, video_url, image_url, 
+      file_url, statue, is_employ, 
+      created_time, updated_time, confirm_content, 
+      cause)
+    values (#{id,jdbcType=INTEGER}, #{tagId,jdbcType=INTEGER}, #{channelId,jdbcType=INTEGER}, 
+      #{customerId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{msgType,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR}, 
+      #{fileUrl,jdbcType=VARCHAR}, #{statue,jdbcType=INTEGER}, #{isEmploy,jdbcType=INTEGER}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{confirmContent,jdbcType=VARCHAR}, 
+      #{cause,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cunyun.smsforeign.dal.model.SmsMessageSendOrder">
+    insert into sms_message_send_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="tagId != null">
+        tag_id,
+      </if>
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
+      <if test="videoUrl != null">
+        video_url,
+      </if>
+      <if test="imageUrl != null">
+        image_url,
+      </if>
+      <if test="fileUrl != null">
+        file_url,
+      </if>
+      <if test="statue != null">
+        statue,
+      </if>
+      <if test="isEmploy != null">
+        is_employ,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="confirmContent != null">
+        confirm_content,
+      </if>
+      <if test="cause != null">
+        cause,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="tagId != null">
+        #{tagId,jdbcType=INTEGER},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null">
+        #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="imageUrl != null">
+        #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fileUrl != null">
+        #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="statue != null">
+        #{statue,jdbcType=INTEGER},
+      </if>
+      <if test="isEmploy != null">
+        #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="confirmContent != null">
+        #{confirmContent,jdbcType=VARCHAR},
+      </if>
+      <if test="cause != null">
+        #{cause,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cunyun.smsforeign.dal.model.SmsMessageSendOrder">
+    update sms_message_send_order
+    <set>
+      <if test="tagId != null">
+        tag_id = #{tagId,jdbcType=INTEGER},
+      </if>
+      <if test="channelId != null">
+        channel_id = #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        video_url = #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="imageUrl != null">
+        image_url = #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fileUrl != null">
+        file_url = #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="statue != null">
+        statue = #{statue,jdbcType=INTEGER},
+      </if>
+      <if test="isEmploy != null">
+        is_employ = #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="confirmContent != null">
+        confirm_content = #{confirmContent,jdbcType=VARCHAR},
+      </if>
+      <if test="cause != null">
+        cause = #{cause,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cunyun.smsforeign.dal.model.SmsMessageSendOrder">
+    update sms_message_send_order
+    set tag_id = #{tagId,jdbcType=INTEGER},
+      channel_id = #{channelId,jdbcType=INTEGER},
+      customer_id = #{customerId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      msg_type = #{msgType,jdbcType=VARCHAR},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      image_url = #{imageUrl,jdbcType=VARCHAR},
+      file_url = #{fileUrl,jdbcType=VARCHAR},
+      statue = #{statue,jdbcType=INTEGER},
+      is_employ = #{isEmploy,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      confirm_content = #{confirmContent,jdbcType=VARCHAR},
+      cause = #{cause,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cunyun.smsforeign.dal.dao.SmsPlatformMapper">
+  <resultMap id="BaseResultMap" type="com.cunyun.smsforeign.dal.model.SmsPlatform">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="support_mobile" jdbcType="INTEGER" property="supportMobile" />
+    <result column="sms_type" jdbcType="INTEGER" property="smsType" />
+    <result column="wight" jdbcType="INTEGER" property="wight" />
+    <result column="is_start" jdbcType="INTEGER" property="isStart" />
+    <result column="is_employ" jdbcType="INTEGER" property="isEmploy" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, price, support_mobile, sms_type, wight, is_start, is_employ, supplier_code, 
+    updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sms_platform
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.cunyun.smsforeign.dal.model.SmsPlatform">
+    insert into sms_platform (id, name, price, 
+      support_mobile, sms_type, wight, 
+      is_start, is_employ, supplier_code, 
+      updated_time)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
+      #{supportMobile,jdbcType=INTEGER}, #{smsType,jdbcType=INTEGER}, #{wight,jdbcType=INTEGER}, 
+      #{isStart,jdbcType=INTEGER}, #{isEmploy,jdbcType=INTEGER}, #{supplierCode,jdbcType=VARCHAR}, 
+      #{updatedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cunyun.smsforeign.dal.model.SmsPlatform">
+    insert into sms_platform
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="supportMobile != null">
+        support_mobile,
+      </if>
+      <if test="smsType != null">
+        sms_type,
+      </if>
+      <if test="wight != null">
+        wight,
+      </if>
+      <if test="isStart != null">
+        is_start,
+      </if>
+      <if test="isEmploy != null">
+        is_employ,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="supportMobile != null">
+        #{supportMobile,jdbcType=INTEGER},
+      </if>
+      <if test="smsType != null">
+        #{smsType,jdbcType=INTEGER},
+      </if>
+      <if test="wight != null">
+        #{wight,jdbcType=INTEGER},
+      </if>
+      <if test="isStart != null">
+        #{isStart,jdbcType=INTEGER},
+      </if>
+      <if test="isEmploy != null">
+        #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cunyun.smsforeign.dal.model.SmsPlatform">
+    update sms_platform
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="supportMobile != null">
+        support_mobile = #{supportMobile,jdbcType=INTEGER},
+      </if>
+      <if test="smsType != null">
+        sms_type = #{smsType,jdbcType=INTEGER},
+      </if>
+      <if test="wight != null">
+        wight = #{wight,jdbcType=INTEGER},
+      </if>
+      <if test="isStart != null">
+        is_start = #{isStart,jdbcType=INTEGER},
+      </if>
+      <if test="isEmploy != null">
+        is_employ = #{isEmploy,jdbcType=INTEGER},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cunyun.smsforeign.dal.model.SmsPlatform">
+    update sms_platform
+    set name = #{name,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      support_mobile = #{supportMobile,jdbcType=INTEGER},
+      sms_type = #{smsType,jdbcType=INTEGER},
+      wight = #{wight,jdbcType=INTEGER},
+      is_start = #{isStart,jdbcType=INTEGER},
+      is_employ = #{isEmploy,jdbcType=INTEGER},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="queryBySmsTypeAndIsEmploy" resultMap="BaseResultMap">
+      SELECT
+          *
+      FROM
+          sms_platform
+      WHERE sms_type=#{smsType}
+      AND is_employ=0
+  </select>
+
+    <select id="queryByCode" resultMap="BaseResultMap">
+      SELECT
+          *
+      FROM
+          sms_platform
+      WHERE supplier_code=#{supplierCode}
+      AND sms_type=#{type}
+      AND is_employ=0
+    </select>
+</mapper>
