@@ -53,31 +53,22 @@ public class MainController {
     @Resource
     private SmsSendDetailsMapper smsSendDetailsMapper;
 
-
-//    @ResponseBody
-//    @RequestMapping(value = "send" ,method = RequestMethod.POST)
-//    public JsonResponseMsg service(HttpServletRequest request) {
-//        JsonResponseMsg jsonResponseMsg = new JsonResponseMsg();
-//        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-//        MultipartFile file = multipartRequest.getFile("video");
-//        String filename = file.getOriginalFilename();
-//        System.out.println(filename);
-//        String name=request.getParameter("userName");  //用于用户验证
-//        String pwd=request.getParameter("password");
-//
-//        String token = request.getParameter("password");
-//        return jsonResponseMsg;
-//    }
-
     @ResponseBody
     @RequestMapping(value = "send" ,method = RequestMethod.POST)
     public JsonResponseMsg send(HttpServletRequest request) {
         JsonResponseMsg result = new JsonResponseMsg();
         ReqBody reqBody = new ReqBody();
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile video = multipartRequest.getFile("video");
-        if(video==null){
-            return result.fill(JsonResponseMsg.CODE_FAIL,"请传入视频","");
+        if("2".equals(request.getParameter("type"))){
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            MultipartFile video = multipartRequest.getFile("video");
+            if(video==null){
+                return result.fill(JsonResponseMsg.CODE_FAIL,"请传入视频","");
+            }
+            reqBody.setVideo(fileUpload(propAccessorUtils.getProperties("sms_file"),video));
+            MultipartFile picFile = multipartRequest.getFile("picFile");
+            if(picFile!=null){
+                reqBody.setPicture(fileUpload(propAccessorUtils.getProperties("sms_file"),picFile));
+            }
         }
         reqBody.setContent(request.getParameter("content"));
         reqBody.setType(request.getParameter("type"));
@@ -86,17 +77,9 @@ public class MainController {
         reqBody.setPassword(request.getParameter("password"));
         reqBody.setTitle(request.getParameter("title"));
         reqBody.setSign(request.getParameter("sign"));
-        if("2".equals(reqBody.getType())){
-            reqBody.setVideo(fileUpload(propAccessorUtils.getProperties("sms_file"),video));
-            MultipartFile picFile = multipartRequest.getFile("picFile");
-            if(picFile!=null){
-                reqBody.setPicture(fileUpload(propAccessorUtils.getProperties("sms_file"),picFile));
-            }
-        }
         result = serviceCenter(reqBody, request);
         return result;
     }
-
 
     public static  String fileUpload( String url ,MultipartFile file) {
         String filePath= "";
@@ -113,44 +96,6 @@ public class MainController {
         return  filePath;
     }
 
-//    //文件上传
-//    public static JsonResponseMsg filePost(String fil){
-//        JsonResponseMsg responseMsg = new JsonResponseMsg();
-//        //1:创建一个httpclient对象
-//        HttpClient httpclient = new DefaultHttpClient();
-//        try {
-//            //2：创建http的发送方式对象，是GET还是post
-////            HttpPost httppost = new HttpPost("http://47.97.174.218:55670/sms/fileUpload");//服务器
-//            HttpPost httppost = new HttpPost("http://127.0.0.1:55670/sms/fileUpload");//本地
-//            //3：创建要发送的实体，就是key-value的这种结构
-//            MultipartEntity file = new MultipartEntity();
-//            FileBody videoFile = new FileBody(new File(fil));
-//            file.addPart("file",videoFile);
-//            httppost.setEntity(file);
-//            //4：执行httppost对象，从而获得信息
-//            HttpResponse response = httpclient.execute(httppost);
-//            HttpEntity resEntity = response.getEntity();
-//            //获得返回来的信息，转化为字符串string
-//            String resString = EntityUtils.toString(resEntity);
-//            JSONObject object = new JSONObject();
-//            JSONObject object1  = (JSONObject) object.parse(resString);
-//            if("200".equals(object1.getString("code"))){
-//                responseMsg.setCode(200);
-//                responseMsg.setMsg(object1.getString("msg"));
-//            }
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        } catch (IllegalStateException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
-//        }
-//        return responseMsg;
-//    }
-
-
     /**
      * 请求处理中心
      */
@@ -163,7 +108,6 @@ public class MainController {
         if(account==null || !account.getPwd().equals(reqBody.getPassword())){
            return  result.fill(JsonResponseMsg.CODE_FAIL,"账号或者密码错误","");
         }
-
         if(StringUtils.isEmpty(reqBody.getMobile())){
             return  result.fill(JsonResponseMsg.CODE_FAIL,"请输入手机号","");
         }
@@ -176,13 +120,8 @@ public class MainController {
         if(StringUtils.isEmpty(reqBody.getType())){
             return  result.fill(JsonResponseMsg.CODE_FAIL,"请选择短信要发送的短信类型","");
         }
-
         if(StringUtils.isEmpty(reqBody.getTitle())){
             return  result.fill(JsonResponseMsg.CODE_FAIL,"请输入你要发送的标题","");
-        }
-
-        if(StringUtils.isEmpty(reqBody.getVideo())){
-            return  result.fill(JsonResponseMsg.CODE_FAIL,"请传入你要发送的视频","");
         }
         //手机号码判断归属运营商
         String mobile = reqBody.getMobile();
@@ -190,7 +129,6 @@ public class MainController {
         List<String> LT = new ArrayList<>();
         List<String> YD = new ArrayList<>();
         List<String> DX = new ArrayList<>();
-
         for (String s:mobiles) {
             String mobileType = JudgeOperator.matchNum(s);
             if(mobileType.equals(CommonConstants.DX)){
@@ -201,7 +139,6 @@ public class MainController {
                 YD.add(s);
             }
         }
-
         if(reqBody.getType().equals("1")){ //普通短信
             if(StringUtils.isEmpty(reqBody.getContent())){
                 return  result.fill(JsonResponseMsg.CODE_FAIL,"请输入你要发送的内容","");
@@ -209,23 +146,9 @@ public class MainController {
             List<SmsPlatform> smsPlatformsCharacters = SmsPlatformService.queryBySmsTypeAndIsEmploy(CommonConstants.SMS_COMMON);
             SmsCharactersService.smsCharacters(account,result,reqBody,smsPlatformsCharacters,LT,YD,DX);
         }else if(reqBody.getType().equals("2")){//视频短信
-//            JsonResponseMsg fileMsg= filePost(reqBody.getVideo());
-//            if(200!=fileMsg.getCode()){
-//                result.setMsg("上传视频文件失败");
-//                result.setCode(-101);
-//                return result;
-//            }
-//            reqBody.setVideo(propAccessorUtils.getProperties("sms_file")+"/"+fileMsg.getMsg());
-//            if(!StringUtils.isEmpty(reqBody.getPicture())){
-//                fileMsg = filePost(reqBody.getPicture());
-//                if(200!=fileMsg.getCode()){
-//                    result.setMsg("上传图片文件文件失败");
-//                    result.setCode(-101);
-//                    return result;
-//                }
-//                reqBody.setPicture(propAccessorUtils.getProperties("sms_file")+"/"+fileMsg.getMsg());
-//            }
-
+            if(StringUtils.isEmpty(reqBody.getVideo())){
+                return  result.fill(JsonResponseMsg.CODE_FAIL,"请传入你要发送的视频","");
+            }
             Boolean bool = isLawful(reqBody,result);
             if(!bool){//判断彩信文件是否合法
                 return result;
@@ -252,7 +175,6 @@ public class MainController {
             result.setMsgId("");
             return false;
         }
-
         //计算彩信内容长度大小不能大于1.99M
         Long length = null;
         try {
@@ -300,5 +222,4 @@ public class MainController {
         map.put("assessor",smsSendDetails.getAssessor());
         return result.fill(JsonResponseMsg.CODE_SUCCESS,"查询成功",map);
     }
-
 }

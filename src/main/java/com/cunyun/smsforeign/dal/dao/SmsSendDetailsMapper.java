@@ -25,4 +25,7 @@ public interface SmsSendDetailsMapper {
     void updatebByCharacteristicAndCode(@Param("characteristic")String characteristic, @Param("code")String muChenCode);
 
     SmsSendDetails queryBymsId(@Param("msId")String msId);
+
+    SmsSendDetails queryBycharacteristicAndCode(@Param("characteristic")String characteristic, @Param("code")String sunJianCode);
+
 }

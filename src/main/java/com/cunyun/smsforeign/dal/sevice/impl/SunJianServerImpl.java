@@ -1,7 +1,5 @@
 package com.cunyun.smsforeign.dal.sevice.impl;
 
-import com.alibaba.druid.sql.visitor.functions.Substring;
-import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.cunyun.smsforeign.common.*;
 import com.cunyun.smsforeign.dal.ReqBody;
@@ -11,7 +9,6 @@ import com.cunyun.smsforeign.dal.dao.SmsSendTaskMapper;
 import com.cunyun.smsforeign.dal.model.Account;
 import com.cunyun.smsforeign.dal.model.SmsPlatform;
 import com.cunyun.smsforeign.dal.model.SmsSendDetails;
-import com.cunyun.smsforeign.dal.model.SmsSendTask;
 import com.cunyun.smsforeign.dal.sevice.SunJianServer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -24,10 +21,10 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -48,16 +45,15 @@ public class SunJianServerImpl implements SunJianServer {
     @Resource
     private SmsPlatformMapper smsPlatformMapper;
 
-    //普通短信发送
+    //普通短信模板申请
     @Override
     public void smsCharactersSend(Account account,JsonResponseMsg result, ReqBody reqBody) {
-        String url = propAccessorUtils.getProperties("c_sunjian_send_video_templet_url");
-        String loginname = propAccessorUtils.getProperties("sunjian_loginname");
-        String password = propAccessorUtils.getProperties("sunjian_pwd");
-        String txtPath = propAccessorUtils.getProperties("video_txt");
+        String url = propAccessorUtils.getProperties("sunjian_characters_getMsgTemplate");
+        String loginname = propAccessorUtils.getProperties("sunjian_characters_loginname");
+        String password = propAccessorUtils.getProperties("sunjian_characters_pwd");
 //        String content = reqBody.getContent();
         //有用笋尖普通短信支持三网通所以直接拿来用不用区分运营商
-        Boolean resultBoolen = filePost(url,loginname,password,result,reqBody,txtPath);
+        Boolean resultBoolen = filePost(url,loginname,password,result,reqBody,"");
         if(resultBoolen){
             insertSql(reqBody,result,account,SmsPlatformCode.SUN_JIAN_CODE,1);
         }
@@ -73,10 +69,11 @@ public class SunJianServerImpl implements SunJianServer {
                 SmsSendDetails smsSendDetails = new SmsSendDetails();
                 smsSendDetails.setAdminId(account.getAccountId());
                 smsSendDetails.setCreateTime(date);
-                if(reqBody.getType().equals("2")){//视频类型需要审核所以设置为暂时未发送状态，且需要自己下发
-                    smsSendDetails.setIsSend(0);
-                }else if(reqBody.getType().equals("1")){//短信的话虽然要审核，但审核完后笋尖会自动下发，所以就认为下发了
-                    smsSendDetails.setIsSend(1);
+                smsSendDetails.setIsSend(0);
+                if("2".equals(reqBody.getType())){
+                    smsSendDetails.setExtVideoId(2);
+                }else if("1".equals(reqBody.getType())){
+                    smsSendDetails.setExtVideoId(1);
                 }
                 smsSendDetails.setAssessor(1);
                 smsSendDetails.setCharacteristic(reqBody.getCharacteristic());
@@ -85,13 +82,21 @@ public class SunJianServerImpl implements SunJianServer {
                 smsSendDetails.setMobile(s);
                 smsSendDetails.setSupplierCode(code);
                 smsSendDetails.setCost(smsPlatform.getPrice());
-
                 list.add(smsSendDetails);
         }
         smsSendDetailsMapper.insertByBatch(list);
-
     }
 
+    /**
+     * 短信模板申请
+     * @param url
+     * @param loginname
+     * @param password
+     * @param result
+     * @param reqBody
+     * @param txtPath
+     * @return
+     */
     public  Boolean filePost(String url, String loginname, String password,JsonResponseMsg result,ReqBody reqBody,String txtPath){
         //1:创建一个httpclient对象
         Boolean resultBoolen = true;
@@ -104,31 +109,39 @@ public class SunJianServerImpl implements SunJianServer {
             MultipartEntity reqEntity = new MultipartEntity();
             StringBody name = name = new StringBody(loginname,charset);
             StringBody pwd = new StringBody(password,charset);
-            StringBody body = new StringBody(reqBody.getContent(),charset);
-            StringBody tel = new StringBody(reqBody.getMobile(),charset);
-            StringBody uuid = new StringBody(UUID.randomUUID().toString().replaceAll("-", ""),charset);
-            reqEntity.addPart("flowid", uuid);
+            StringBody content =null;
+            if(!StringUtils.isEmpty(reqBody.getContent())){
+                 content = new StringBody(reqBody.getContent(),charset);
+            }
             reqEntity.addPart("loginname", name);
             reqEntity.addPart("password", pwd);
-            reqEntity.addPart("content", body);
-            reqEntity.addPart("mobileid", tel);
+            if("1".equals(reqBody.getType())){
+                reqEntity.addPart("msg_content", content);
+            }
             //如果是视频短信的话需要以下操作
-            if(reqBody.getType().equals("2")){
+            if("2".equals(reqBody.getType())){
+                //视频
                 FileBody videoFile = new FileBody(new File(reqBody.getVideo()));
-                FileBody picFile = new FileBody(new File(reqBody.getPicture()));
-                //txt文件生成
-                TxtExport.creatTxtFile(txtPath,reqBody.getTitle());
-                TxtExport.writeTxtFile(txtPath,reqBody.getTitle(),reqBody.getContent()+"温馨提示：本条短信免收流量费【视频短信】");
-                String filenameTemp = txtPath + reqBody.getTitle() + ".txt";
-
-                FileBody txtFile = new FileBody(new File(filenameTemp));
                 reqEntity.addPart("video", videoFile);
-                reqEntity.addPart("pic", picFile);
+                //图片
+                if(!org.apache.commons.lang3.StringUtils.isEmpty(reqBody.getPicture())){
+                    FileBody picFile = new FileBody(new File(reqBody.getPicture()));
+                    reqEntity.addPart("pic", picFile);
+                }
+                //内容txt文件生成
+                TxtExport.creatTxtFile(txtPath,reqBody.getTitle());
+                if(StringUtils.isEmpty(reqBody.getContent())){
+                    TxtExport.writeTxtFile(txtPath,reqBody.getTitle(),"温馨提示：本条短信免收流量费");
+                }else{
+                    TxtExport.writeTxtFile(txtPath,reqBody.getTitle(),reqBody.getContent()+"温馨提示：本条短信免收流量费");
+                }
+                String filenameTemp = txtPath+ reqBody.getTitle() + ".txt";
+                FileBody txtFile = new FileBody(new File(filenameTemp));
                 reqEntity.addPart("txt", txtFile);
-
+                //标题
                 StringBody title = new StringBody(reqBody.getTitle(),charset);
                 reqEntity.addPart("msg_title", title);
-
+                //签名
                 StringBody sign = new StringBody("浙江完美在线",charset);
                 reqEntity.addPart("msg_sign", sign);
             }
@@ -139,32 +152,32 @@ public class SunJianServerImpl implements SunJianServer {
             HttpEntity resEntity = response.getEntity();
             //获得返回来的信息，转化为字符串string
             String resString = EntityUtils.toString(resEntity);
-
-
-            if(reqBody.getType().equals("1")){
-                if("0".equals(resString)){
-                    result.setCode(200);
-                    result.setMsgId("");
-                    result.setMsg("已经发送到运营商那边，审核完后会自动下发");
-                }
-            }else if(reqBody.getType().equals("2")) {
-                JSONObject object = new JSONObject();
-                JSONObject object1  = (JSONObject) object.parse(resString);
-                if("0".equals(object1.getString("code"))){
+            JSONObject object = new JSONObject();
+            JSONObject object1  = (JSONObject) object.parse(resString);
+            if("0".equals(object1.getString("code"))){
+                if(reqBody.getType().equals("2")){
                     if(!org.springframework.util.StringUtils.isEmpty(result.getMsgId())){
                         result.setMsgId(result.getMsgId()+","+object1.getString("tmpeId"));
                     }else{
                         result.setMsgId(object1.getString("tmpeId"));
                     }
-                    result.setCode(200);
-                    result.setMsg("已经发送到运营商那边，审核完后会自动下发");
                     reqBody.setCharacteristic(object1.getString("tmpeId"));
-                }else{
-                    result.setCode(-101);
-                    result.setMsgId("");
-                    result.setMsg("调取移动运营商接口异常");
-                    resultBoolen=false;
+                }else if (reqBody.getType().equals("1")){
+                    System.out.println(object1);
+                    if(!org.springframework.util.StringUtils.isEmpty(result.getMsgId())){
+                        result.setMsgId(result.getMsgId()+","+object1.getString("msgId"));
+                    }else{
+                        result.setMsgId(object1.getString("msgId"));
+                    }
+                    reqBody.setCharacteristic(object1.getString("msgId"));
                 }
+                result.setCode(200);
+                result.setMsg("已经发送到运营商那边，审核完后会自动下发");
+            }else{
+                result.setCode(-101);
+                result.setMsgId("");
+                result.setMsg("调取移动运营商接口异常");
+                resultBoolen=false;
             }
         } catch (UnsupportedEncodingException e) {
             resultBoolen=false;
@@ -202,12 +215,6 @@ public class SunJianServerImpl implements SunJianServer {
      */
     @Override
     public void smsVideoApply(Account account, JsonResponseMsg result, ReqBody reqBody) {
-
-
-//        Boolean isLawful=isLawful(reqBody,result);
-//        if(!isLawful){
-//            return;
-//        }
         //先申请模板
         String url = propAccessorUtils.getProperties("c_sunjian_apply_video_templet_url");
         String loginname = propAccessorUtils.getProperties("sunjian_loginname");
@@ -228,46 +235,4 @@ public class SunJianServerImpl implements SunJianServer {
     }
 
 
-//    //判断彩信内容是否合法
-//    public static Boolean isLawful(ReqBody reqBody,JsonResponseMsg result) {
-//        //判断视频格式
-//        File tempFile =new File(reqBody.getVideo());
-//        String fileName = tempFile.getName();
-//        String gehsi =  fileName.substring(fileName.length()-3,fileName.length());
-//        if(!"3gp".equals(gehsi) && !"mp4".equals(gehsi)){
-//            result.setMsg("视频格式不对,请传入mp4，或者3gp格式的");
-//            result.setCode(-101);
-//            result.setMsgId("");
-//            return false;
-//        }
-//
-//        //计算彩信内容长度大小不能大于1.99M
-//        Long length = null;
-//        try {
-//            length = Utils.getFileSize(new File(reqBody.getVideo()));
-//            if(!StringUtils.isEmpty(reqBody.getPicture())){
-//                length +=Utils.getFileSize(new File(reqBody.getPicture()));
-//                String picType = Utils.getPicType(new FileInputStream(new File(reqBody.getPicture())));
-//                if(!CommonConstants.TYPE_GIF.equals(picType)&&!CommonConstants.TYPE_JPG.equals(picType)&&!CommonConstants.TYPE_PNG.equals(picType)){
-//                    result.setMsg("你的图片格式不对，请传入jpg,png,jif格式的");
-//                    result.setCode(-101);
-//                    result.setMsgId("");
-//                    return false;
-//                }
-//            }
-//            if(CommonConstants.SMS_VIDEO_MAX_LENGTH < length){
-//                result.setMsg("你的短信内容太大了");
-//                result.setCode(-101);
-//                result.setMsgId("");
-//                return false;
-//            }
-//        } catch (IOException e) {
-//            result.setMsg("获取文件大小长度错误");
-//            result.setCode(-101);
-//            result.setMsgId("");
-//            e.printStackTrace();
-//            return false;
-//        }
-//        return  true;
-//    }
 }

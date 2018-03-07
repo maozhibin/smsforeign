@@ -6,9 +6,7 @@ public class TxtExport {
 //    private static String filenameTemp;
 
     public static void main(String[] args) throws IOException {
-//        txtExport.creatTxtFile("你好");
-//        txtExport.writeTxtFile("你好");
-//        txtExport.delete("。你好");
+        creatTxtFile("F:/txt/","测试");
     }
 
 

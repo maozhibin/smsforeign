@@ -8,7 +8,7 @@
 <Configuration monitorInterval="30" status="OFF" strict="true">
 
     <Properties>
-        <Property name="log.home">/logs/zone-admin</Property>
+        <Property name="log.home">/logs/sms-foreign</Property>
         <Property name="layout.pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %content%n</Property>
         <property name="output_log_level">info</property><!-- 日志输出级别 -->
     </Properties>

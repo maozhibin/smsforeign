@@ -9,7 +9,7 @@
     <result column="real_send_time" jdbcType="TIMESTAMP" property="realSendTime" />
     <result column="is_send" jdbcType="INTEGER" property="isSend" />
     <result column="is_employ" jdbcType="INTEGER" property="isEmploy" />
-    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="mobile" jdbcType="LONGVARCHAR" property="mobile" />
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="ext_video_id" jdbcType="INTEGER" property="extVideoId" />
     <result column="post_time" jdbcType="INTEGER" property="postTime" />
@@ -35,7 +35,7 @@
       )
     values (#{id,jdbcType=INTEGER}, #{adminId,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},  #{taskSendTime,jdbcType=TIMESTAMP},
       #{realSendTime,jdbcType=TIMESTAMP}, #{isSend,jdbcType=INTEGER}, #{isEmploy,jdbcType=INTEGER}, 
-      #{mobile,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{extVideoId,jdbcType=INTEGER}, 
+      #{mobile,jdbcType=LONGVARCHAR}, #{content,jdbcType=VARCHAR}, #{extVideoId,jdbcType=INTEGER},
       #{postTime,jdbcType=INTEGER}, #{supplierCode,jdbcType=VARCHAR}, #{cost,jdbcType=DECIMAL}
       )
   </insert>
@@ -105,7 +105,7 @@
         #{isEmploy,jdbcType=INTEGER},
       </if>
       <if test="mobile != null">
-        #{mobile,jdbcType=VARCHAR},
+        #{mobile,jdbcType=LONGVARCHAR},
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
@@ -146,7 +146,7 @@
         is_employ = #{isEmploy,jdbcType=INTEGER},
       </if>
       <if test="mobile != null">
-        mobile = #{mobile,jdbcType=VARCHAR},
+        mobile = #{mobile,jdbcType=LONGVARCHAR},
       </if>
       <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
@@ -174,7 +174,7 @@
       real_send_time = #{realSendTime,jdbcType=TIMESTAMP},
       is_send = #{isSend,jdbcType=INTEGER},
       is_employ = #{isEmploy,jdbcType=INTEGER},
-      mobile = #{mobile,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=LONGVARCHAR},
       content = #{content,jdbcType=VARCHAR},
       ext_video_id = #{extVideoId,jdbcType=INTEGER},
       post_time = #{postTime,jdbcType=INTEGER},
@@ -185,12 +185,12 @@
 
 
   <insert id="insertByBatch" parameterType="java.util.List">
-    insert into sms_send_details (admin_id, create_time,is_send,is_employ,mobile,content,supplier_code,cost,characteristic)
+    insert into sms_send_details (admin_id, create_time,is_send,is_employ,mobile,content,supplier_code,cost,characteristic,ext_video_id)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.adminId,jdbcType=INTEGER}, #{item.createTime,jdbcType=TIMESTAMP},#{item.isSend,jdbcType=INTEGER},
-      #{item.isEmploy,jdbcType=INTEGER}, #{item.mobile,jdbcType=VARCHAR},#{item.content,jdbcType=VARCHAR},
-      #{item.supplierCode,jdbcType=VARCHAR}, #{item.cost,jdbcType=DECIMAL}, #{item.characteristic,jdbcType=VARCHAR})
+      #{item.isEmploy,jdbcType=INTEGER}, #{item.mobile,jdbcType=LONGVARCHAR},#{item.content,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.cost,jdbcType=DECIMAL}, #{item.characteristic,jdbcType=VARCHAR},#{item.extVideoId,jdbcType=INTEGER})
     </foreach>
   </insert>
 
@@ -240,5 +240,16 @@
     WHERE
         characteristic = #{msId}
     AND is_employ = 0
+  </select>
+
+
+  <select id="queryBycharacteristicAndCode" resultMap="BaseResultMap">
+    SELECT
+        *
+    FROM
+        sms_send_details
+    WHERE is_employ=0
+    AND characteristic =#{characteristic}
+    AND supplier_code =#{code}
   </select>
 </mapper>

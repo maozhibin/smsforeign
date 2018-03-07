@@ -100,7 +100,10 @@ public class MuChenServiceImpl implements MuChenService {
             String paraData = gson.toJson(t);
 
             HttpClientUtil httpClient = HttpClientUtil.getInstance();
+            Long time = new Date().getTime();
             String html = httpClient.getResponseBodyAsString(dyCheckSaveUrl, paraData);
+            System.out.println("eeeee:"+(new Date().getTime()-time));
+
             if(!StringUtils.isEmpty(html)){
                 JSONObject object = new JSONObject();
                 JSONObject object1  = (JSONObject) object.parse(html);

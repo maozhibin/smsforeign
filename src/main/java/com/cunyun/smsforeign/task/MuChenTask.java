@@ -40,7 +40,7 @@ public class MuChenTask {
 
 //    @Scheduled(cron="0 0 0/1 * * ?")//一个小时
 //    @Scheduled(cron = "0 0/1 * * * ?")//每分钟
-    @Scheduled(cron = "0 0/5 * * * ?")//每分钟
+    @Scheduled(cron = "0 0/5 * * * ?")//五分钟
     public void cronJob(){
         String key = propAccessorUtils.getProperties("mucheng_key");
         String username = propAccessorUtils.getProperties("mucheng_username");
