@@ -28,4 +28,5 @@ public interface SmsSendDetailsMapper {
 
     SmsSendDetails queryBycharacteristicAndCode(@Param("characteristic")String characteristic, @Param("code")String sunJianCode);
 
+    SmsSendDetails queryPlatformCodeByCharacteristic(@Param("characteristic") String characteristic);
 }

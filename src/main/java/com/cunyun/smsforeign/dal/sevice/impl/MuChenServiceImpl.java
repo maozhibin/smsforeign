@@ -11,9 +11,12 @@ import com.cunyun.smsforeign.common.muchen.MuChenUtil;
 import com.cunyun.smsforeign.dal.ReqBody;
 import com.cunyun.smsforeign.dal.dao.SmsPlatformMapper;
 import com.cunyun.smsforeign.dal.dao.SmsSendDetailsMapper;
+import com.cunyun.smsforeign.dal.dao.SmsSendRecordMapper;
 import com.cunyun.smsforeign.dal.dao.SmsSendTaskMapper;
 import com.cunyun.smsforeign.dal.model.Account;
+import com.cunyun.smsforeign.dal.model.SmsSendRecord;
 import com.cunyun.smsforeign.dal.sevice.MuChenService;
+import com.cunyun.smsforeign.task.TaskModel;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,10 @@ import sun.misc.BASE64Encoder;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 @Slf4j
@@ -39,7 +46,8 @@ public class MuChenServiceImpl implements MuChenService {
     private SmsPlatformMapper smsPlatformMapper;
     @Resource
     private  SunJianServerImpl sunJianServerImpl;
-
+    @Resource
+    private SmsSendRecordMapper smsSendRecordMapper;
     @Override
     public void smsVideoApply(Account account, JsonResponseMsg result, ReqBody reqBody) {
         String key = propAccessorUtils.getProperties("mucheng_key");
@@ -50,6 +58,8 @@ public class MuChenServiceImpl implements MuChenService {
             sunJianServerImpl.insertSql(reqBody,result,account, SmsPlatformCode.MU_CHEN_CODE,2);
         }
     }
+
+
 
     //牧尘视频短信申请模板
     public void dyCheckSave(JsonResponseMsg result,ReqBody reqBody,String key,String username,String dyCheckSaveUrl) {
@@ -115,7 +125,7 @@ public class MuChenServiceImpl implements MuChenService {
                     }
                     reqBody.setCharacteristic(object1.getString("desc"));
                     result.setCode(200);
-                    result.setMsg("已经发送到运营商那边，审核完后会自动下发");
+                    result.setMsg("模板申请已经提交到运营商");
                 }else{
                     result.setCode(1);
                     result.setMsg("调取联通运营商接口异常");
@@ -127,6 +137,56 @@ public class MuChenServiceImpl implements MuChenService {
 
     }
 
+    /**
+     * 牧尘短信下发方法
+     * @param key
+     * @param url
+     * @param username
+     * @param model
+     */
+    public void send(String key,String url,String username,TaskModel model,Integer id) {
+        Gson gson = new Gson();
+        String tels[] = model.getMobile().split(",");
+        try {
+            List<SmsSendRecord> list = new ArrayList<>();
+            for (String tel:tels) {
+                    //用户接口秘钥 + 参数url
+                    String sign =  key + "/api/send?";
+                    TreeMap<String, String> t = new TreeMap<String, String>();
+                    t.put("username", username);//用户名
+                    t.put("sequenceNumber", get24UUID());
+                    t.put("userNumber",model.getMobile());
+                    t.put("id", model.getCharacteristic());
+                    t.put("timestamp", new Date().getTime()+"");
+                    String _sign = MuChenUtil.createSign(t, sign);
+                    sign = MD5.str2MD5(_sign);
+                    t.put("sign", sign);
+                    String paraData = gson.toJson(t);
+                    HttpClientUtil httpClient = HttpClientUtil.getInstance();
+                    String html = httpClient.getResponseBodyAsString(url, paraData);
+                    JSONObject object = new JSONObject();
+                    JSONObject object1  = (JSONObject) object.parse(html);
+                    model.setCode(object1.getString("result"));
+                    SmsSendRecord smsSendRecord = new SmsSendRecord();
+                    smsSendRecord.setMobile(tel);
+                    smsSendRecord.setCreatedTime(new Date());
+                    smsSendRecord.setUpdatedTime(new Date());
+                    smsSendRecord.setSmsSendDetailsId(id);
+                    list.add(smsSendRecord);
+            }
+            smsSendRecordMapper.insertList(list);
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+
+
+    }
+
+    public  String get24UUID(){
+        UUID id=UUID.randomUUID();
+        String[] idd=id.toString().split("-");
+        return idd[0]+idd[1]+idd[4];
+    }
 
 
 }

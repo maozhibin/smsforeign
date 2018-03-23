@@ -28,49 +28,49 @@ public class SmsVideoServiceImpl implements SmsVideoService {
     private MuChenService muChenService;
 
     @Override
-    public void smsVideoSend(Account account, JsonResponseMsg result, ReqBody reqBody, List<SmsPlatform> smsPlatformsVideo, List<String> LT, List<String> YD, List<String> DX) {
+    public void smsVideoSend(Account account, JsonResponseMsg result, ReqBody reqBody, List<SmsPlatform> smsPlatformsVideo) {
 
-        Map<String,Integer> serverWeigthMap = new HashMap<>();//三网通的
-        Map<String,Integer> serverWeigthMapLD = new HashMap<>();//支持联通的
-        Map<String,Integer> serverWeigthMapDX = new HashMap<>();//支持电信的
-        Map<String,Integer> serverWeigthMapYD = new HashMap<>();//支持移动的
-        Utils.route(serverWeigthMap,serverWeigthMapLD,serverWeigthMapDX,serverWeigthMapYD,smsPlatformsVideo);
-        if(StringUtils.isEmpty(serverWeigthMap)){
-            log.error("没有短信运营商可以提供error");
-            result.setCode(1);
-            result.setMsg("没有短信运营商可以提供");
-            return;
-        }
-        String smsPlatformcode = WeightRandom.weightRandom(serverWeigthMap);//路由出三网通的商家
-        String smsPlatformcodeLD = WeightRandom.weightRandom(serverWeigthMapLD);//路由出联通的商家
-        String smsPlatformcodeYD = WeightRandom.weightRandom(serverWeigthMapYD);//路由出移动的商家
-        String smsPlatformcodeDX = WeightRandom.weightRandom(serverWeigthMapDX);//路由出电信的商家
-
-
-        //防止信息被修改，所以每个运营商一开始就建立自己需要处理的信息
-        ReqBody reqBodyLT = reqBody;
-        ReqBody reqBodyDX = reqBody;
-        ReqBody reqBodyYD = reqBody;
-        ReqBody reqBodSAN = reqBody;
-
-        //联通商家(后面如果多家接入的话需要做接口相应失败处理)
-        if(LT.size()>0){
-            if(SmsPlatformCode.MU_CHEN_CODE.equals(smsPlatformcodeLD)){//牧尘视频短信平台
-                String mobile =mobile(LT);
-                reqBodyLT.setMobile(mobile);
-                muChenService.smsVideoApply(account,result,reqBodyLT);
-            }
-        }
+//        Map<String,Integer> serverWeigthMap = new HashMap<>();//三网通的
+//        Map<String,Integer> serverWeigthMapLD = new HashMap<>();//支持联通的
+//        Map<String,Integer> serverWeigthMapDX = new HashMap<>();//支持电信的
+//        Map<String,Integer> serverWeigthMapYD = new HashMap<>();//支持移动的
+//        Utils.route(serverWeigthMap,serverWeigthMapLD,serverWeigthMapDX,serverWeigthMapYD,smsPlatformsVideo);
+//        if(StringUtils.isEmpty(serverWeigthMap)){
+//            log.error("没有短信运营商可以提供error");
+//            result.setCode(1);
+//            result.setMsg("没有短信运营商可以提供");
+//            return;
+//        }
+//        String smsPlatformcode = WeightRandom.weightRandom(serverWeigthMap);//路由出三网通的商家
+//        String smsPlatformcodeLD = WeightRandom.weightRandom(serverWeigthMapLD);//路由出联通的商家
+//        String smsPlatformcodeYD = WeightRandom.weightRandom(serverWeigthMapYD);//路由出移动的商家
+//        String smsPlatformcodeDX = WeightRandom.weightRandom(serverWeigthMapDX);//路由出电信的商家
+//
+//
+//        //防止信息被修改，所以每个运营商一开始就建立自己需要处理的信息
+//        ReqBody reqBodyLT = reqBody;
+//        ReqBody reqBodyDX = reqBody;
+//        ReqBody reqBodyYD = reqBody;
+//        ReqBody reqBodSAN = reqBody;
+//
+//        //联通商家(后面如果多家接入的话需要做接口相应失败处理)
+//        if(LT.size()>0){
+//            if(SmsPlatformCode.MU_CHEN_CODE.equals(smsPlatformcodeLD)){//牧尘视频短信平台
+//                String mobile =mobile(LT);
+//                reqBodyLT.setMobile(mobile);
+                muChenService.smsVideoApply(account,result,reqBody);
+//            }
+//        }
         //电信商家
 
-        //移动商家(后面如果多家接入的话需要做接口相应失败处理)
-        if(YD.size()>0){
-            if(SmsPlatformCode.SUN_JIAN_CODE.equals(smsPlatformcodeYD)){//笋尖视频短信平台
-                String mobile =mobile(YD);
-                reqBodyYD.setMobile(mobile);
-                sunJianServer.smsVideoApply(account,result,reqBodyYD);
-            }
-        }
+//        //移动商家(后面如果多家接入的话需要做接口相应失败处理)
+//        if(YD.size()>0){
+//            if(SmsPlatformCode.SUN_JIAN_CODE.equals(smsPlatformcodeYD)){//笋尖视频短信平台
+//                String mobile =mobile(YD);
+//                reqBodyYD.setMobile(mobile);
+                sunJianServer.smsVideoApply(account,result,reqBody);
+//            }
+//        }
 
         //三网通商家
     }

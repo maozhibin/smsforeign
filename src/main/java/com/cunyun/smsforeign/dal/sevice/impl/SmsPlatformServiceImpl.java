@@ -19,4 +19,6 @@ public class SmsPlatformServiceImpl implements SmsPlatformService {
     public List<SmsPlatform> queryBySmsTypeAndIsEmploy(int smsType) {
         return smsPlatformMapper.queryBySmsTypeAndIsEmploy(smsType);
     }
+
+
 }

@@ -1,6 +1,10 @@
 package com.cunyun.smsforeign.common;
 
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+
 /**
  * Created by 15600 on 2017/8/7.
  */
@@ -40,7 +44,31 @@ public class JudgeOperator {
         }
         return CommonConstants.NO_MOBILE;
     }
-//    public static void main(String[] args) {
-//        System.out.println(matchNum("13093783517"));
-//    }
+    public static void main(String[] args) {
+
+        String tel="13067990008,13067712129,15921138111,18767162311,15757127811,18658151212,15858179047,18605715080,13735490975,13957143710,13501897088,15058163331,18667163586,18868698080,13758139221,18767983108,18767164159,18767192025";
+        String YD="";
+        String LT="";
+        String arrs[] = tel.split(",");
+        for (String arr:arrs) {
+            if(matchNum(arr).equals(CommonConstants.YD)){
+                if(StringUtils.isEmpty(YD)){
+                    YD +=arr;
+                }else{
+                    YD +=","+arr;
+                }
+
+            }
+            if(matchNum(arr).equals(CommonConstants.LT)){
+                if(StringUtils.isEmpty(YD)){
+                    LT +=arr;
+                }else{
+                    LT +=","+arr;
+                }
+
+            }
+        }
+        System.out.println("YD:"+YD);
+        System.out.println("LT:"+LT);
+    }
 }

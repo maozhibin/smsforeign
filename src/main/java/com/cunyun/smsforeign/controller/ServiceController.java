@@ -20,9 +20,6 @@ public class ServiceController {
 
     @RequestMapping(value = "service/check" ,method = RequestMethod.GET)
     public Long check(){
-
-//        String aa = propAccessorUtils.getProperties("sunjian_pwd");
-//        System.out.println(aa);
         return System.currentTimeMillis();
     }
 }

@@ -19,4 +19,5 @@ public interface SmsPlatformMapper {
     List<SmsPlatform> queryBySmsTypeAndIsEmploy(int smsType);
 
     SmsPlatform queryByCode(@Param("supplierCode") String supplierCode,@Param("type") Integer type);
+
 }

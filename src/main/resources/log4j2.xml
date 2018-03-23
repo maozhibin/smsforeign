@@ -59,9 +59,9 @@
             <appender-ref ref="Console"/>
         </logger>
 
-        <logger name="com.cunyun.smsforeign" level="info" additivity="false">
-            <appender-ref ref="DEBUG"/>
-        </logger>
+        <!--<logger name="com.cunyun.smsforeign" level="info" additivity="false">-->
+            <!--<appender-ref ref="DEBUG"/>-->
+        <!--</logger>-->
 
         <Root level="${output_log_level}">
             <appender-ref ref="Console"/>

@@ -81,6 +81,9 @@
       <if test="cost != null">
         cost,
       </if>
+      <if test="characteristic != null">
+        characteristic,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -121,6 +124,9 @@
       </if>
       <if test="cost != null">
         #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="characteristic != null">
+        #{characteristic,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -203,7 +209,6 @@
     WHERE
         supplier_code =#{code}
     AND characteristic IS NOT NULL
-    AND is_send =0
     AND assessor = 1
     GROUP BY characteristic
   </select>
@@ -224,8 +229,7 @@
   <update id="updatebByCharacteristicAndCode">
     update sms_send_details
       SET
-        assessor =2,
-        is_send =1
+        assessor =2
      WHERE
         supplier_code = #{code}
      AND characteristic = #{characteristic}
@@ -252,4 +256,14 @@
     AND characteristic =#{characteristic}
     AND supplier_code =#{code}
   </select>
+
+  <select id="queryPlatformCodeByCharacteristic" resultMap="BaseResultMap">
+      SELECT
+        *
+     FROM
+        sms_send_details
+    WHERE
+        characteristic =#{characteristic}
+  </select>
+
 </mapper>

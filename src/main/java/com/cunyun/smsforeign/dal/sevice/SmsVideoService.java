@@ -8,5 +8,5 @@ import com.cunyun.smsforeign.dal.model.SmsPlatform;
 import java.util.List;
 
 public interface SmsVideoService {
-    void smsVideoSend(Account account, JsonResponseMsg result, ReqBody reqBody, List<SmsPlatform> smsPlatformsVideo, List<String> lt, List<String> yd, List<String> dx);
+    void smsVideoSend(Account account, JsonResponseMsg result, ReqBody reqBody, List<SmsPlatform> smsPlatformsVideo);
 }

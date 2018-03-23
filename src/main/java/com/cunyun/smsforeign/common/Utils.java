@@ -129,18 +129,29 @@ public class Utils {
         }
         return ip;
     }
-//    public static void main(String[] args) throws IOException {
-//        HttpClient httpclient = new DefaultHttpClient();
-//        HttpPost httppost = new HttpPost("http://127.0.0.1:55670/sms/fileUpload");
-//        MultipartEntity reqEntity = new MultipartEntity();
-//        FileBody videoFile = new FileBody(new File("E:\\\\video\\\\test111.png"));
-//        reqEntity.addPart("video", videoFile);
-//        httppost.setEntity(reqEntity);
-//        //4：执行httppost对象，从而获得信息
-//        HttpResponse response = httpclient.execute(httppost);
-////        saveFile(reqEntity.getContent());
-//    }
+    public static void main(String[] args) throws IOException {
+        System.out.println(ReadUrl("sms-foreign.test.upcdn.net///uploads/20180308/unx6mvdvhvyijq418bsql33cxp9cpf0u.mp4"));
+    }
 
-
+    public static  String ReadUrl(String FileName) throws IOException{
+        String read;
+        String readStr ="";
+        try{
+            URL   url   =new   URL(FileName);
+            HttpURLConnection   urlCon   =   (HttpURLConnection)url.openConnection();
+            urlCon.setConnectTimeout(5000);
+            urlCon.setReadTimeout(5000);
+            BufferedReader br =new BufferedReader(new InputStreamReader( urlCon.getInputStream()));
+            while ((read = br.readLine()) !=null) {
+                readStr = readStr + read;
+            }
+            br.close();
+        }
+        catch (IOException e) {
+// TODO Auto-generated catch block
+            readStr ="f";
+        }
+        return readStr;
+    }
 
 }

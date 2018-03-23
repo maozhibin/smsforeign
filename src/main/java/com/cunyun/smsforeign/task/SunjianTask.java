@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,17 +71,18 @@ public class SunjianTask {
                 }
                 JSONObject object = new JSONObject();
                 JSONObject object1  = (JSONObject) object.parse(result);
+                System.out.println("object1:"+object1);
                 String code =  object1.getString("code");
                 String state =  object1.getString("state");
                 if("0".equals(code)){//查询结果成功
                     if("1".equals(state)){//如果状态为审核成功做下发处理
-                        String send = "";
-                        if(type==1){//文字短信下发
-                            send=send(sendurl,loginnameCharacters,passwordCharacters,characteristic,smsSendDetails.getMobile());
-                        }else if(type==2){//视频短信下发
-                            send=send(sendurl,loginname,password,characteristic,smsSendDetails.getMobile());
-                        }
-                        if("0".equals(send)){
+//                        String send = "";
+//                        if(type==1){//文字短信下发
+//                            send=send(sendurl,loginnameCharacters,passwordCharacters,characteristic,smsSendDetails.getMobile());
+//                        }else if(type==2){//视频短信下发
+//                            send=send(sendurl,loginname,password,characteristic,smsSendDetails.getMobile());
+//                        }
+//                        if("0".equals(send)){
                             smsSendDetailsMapper.updatebByCharacteristicAndCode(characteristic,SmsPlatformCode.SUN_JIAN_CODE);
                         }
                     }
@@ -90,7 +92,6 @@ public class SunjianTask {
                 }
             }
         }
-    }
     //查询模板状态
     public static String query(String templateId,String loginname,String password,String queryurl){
         //1:创建一个httpclient对象
@@ -114,6 +115,7 @@ public class SunjianTask {
             HttpEntity resEntity = response.getEntity();
             //获得返回来的信息，转化为字符串string
              result = EntityUtils.toString(resEntity);
+             System.out.println("templateId:"+templateId+","+result);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IllegalStateException e) {
@@ -127,49 +129,51 @@ public class SunjianTask {
     }
 
 
-    /**
-     * 短信下发
-     */
-
-    public static String send(String sendUrl,String loginname,String password,String content,String mobileid){
-        String resString ="";
-      //1:创建一个httpclient对象
-        HttpClient httpclient = new DefaultHttpClient();
-        Charset charset = Charset.forName("gbk");//设置编码
-        try {
-            //2：创建http的发送方式对象，是GET还是post
-            HttpPost httppost = new HttpPost(sendUrl);
-            //3：创建要发送的实体，就是key-value的这种结构
-            MultipartEntity reqEntity = new MultipartEntity();
-            StringBody name = new StringBody(loginname,charset);//填写分配帐户名
-            StringBody pwd = new StringBody(password,charset);//填写分配密码
-            StringBody contentValue = new StringBody(content,charset);
-            StringBody mobileids = new StringBody(mobileid,charset);
-            StringBody flowid = new StringBody(UUID.randomUUID().toString().replaceAll("-", ""),charset);
-            reqEntity.addPart("loginname", name);
-            reqEntity.addPart("password", pwd);
-            reqEntity.addPart("content", contentValue);
-            reqEntity.addPart("mobileid", mobileids);
-            reqEntity.addPart("flowid", flowid);
-            httppost.setEntity(reqEntity);
-            //4：执行httppost对象，从而获得信息
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity resEntity = response.getEntity();
-            //获得返回来的信息，转化为字符串string
-             resString = EntityUtils.toString(resEntity);
-             System.out.println("resString:"+resString);
-        } catch (UnsupportedEncodingException e) {
-            log.error("调用移动发短信接口失败");
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            log.error("调用移动发短信接口失败");
-            e.printStackTrace();
-        } catch (IOException e) {
-            log.error("调用移动发短信接口失败");
-            e.printStackTrace();
-        } finally {
-            try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
-        }
-        return resString;
-    }
+//    /**
+//     * 短信下发
+//     */
+//
+//    public static String send(String sendUrl,String loginname,String password,String content,String mobileid){
+//        String resString ="";
+//        String arrs[] = mobileid.split(",");
+//        for (String arr:arrs) {
+//            //1:创建一个httpclient对象
+//            HttpClient httpclient = new DefaultHttpClient();
+//            Charset charset = Charset.forName("gbk");//设置编码
+//            try {
+//                //2：创建http的发送方式对象，是GET还是post
+//                HttpPost httppost = new HttpPost(sendUrl);
+//                //3：创建要发送的实体，就是key-value的这种结构
+//                MultipartEntity reqEntity = new MultipartEntity();
+//                StringBody name = new StringBody(loginname,charset);//填写分配帐户名
+//                StringBody pwd = new StringBody(password,charset);//填写分配密码
+//                StringBody contentValue = new StringBody(content,charset);
+//                StringBody mobileids = new StringBody(arr,charset);
+//                StringBody flowid = new StringBody(UUID.randomUUID().toString().replaceAll("-", ""),charset);
+//                reqEntity.addPart("loginname", name);
+//                reqEntity.addPart("password", pwd);
+//                reqEntity.addPart("content", contentValue);
+//                reqEntity.addPart("mobileid", mobileids);
+//                reqEntity.addPart("flowid", flowid);
+//                httppost.setEntity(reqEntity);
+//                //4：执行httppost对象，从而获得信息
+//                HttpResponse response = httpclient.execute(httppost);
+//                HttpEntity resEntity = response.getEntity();
+//                //获得返回来的信息，转化为字符串string
+//                resString = EntityUtils.toString(resEntity);
+//            } catch (UnsupportedEncodingException e) {
+//                log.error("调用移动发短信接口失败");
+//                e.printStackTrace();
+//            } catch (IllegalStateException e) {
+//                log.error("调用移动发短信接口失败");
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                log.error("调用移动发短信接口失败");
+//                e.printStackTrace();
+//            } finally {
+//                try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
+//            }
+//        }
+//        return resString;
+//    }
 }

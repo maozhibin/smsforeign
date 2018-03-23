@@ -11,4 +11,5 @@ public interface SunJianServer {
 
     void smsVideoApply(Account account, JsonResponseMsg result, ReqBody reqBody);
 
+    String send(String sendurl, String loginnameCharacters, String passwordCharacters, String characteristic, String yd, Integer id);
 }

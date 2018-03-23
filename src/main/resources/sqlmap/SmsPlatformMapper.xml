@@ -165,4 +165,5 @@
       AND sms_type=#{type}
       AND is_employ=0
     </select>
+
 </mapper>

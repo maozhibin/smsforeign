@@ -2,10 +2,7 @@ package com.cunyun.smsforeign.common.muchen;
 
 import sun.misc.BASE64Encoder;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -49,4 +46,7 @@ public class MuChenUtil {
         return new BASE64Encoder().encode(buffer);
 
     }
+
+
+
 }

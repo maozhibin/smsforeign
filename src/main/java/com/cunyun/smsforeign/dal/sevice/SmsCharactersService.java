@@ -11,5 +11,5 @@ import java.util.List;
  * 普通短信service
  */
 public interface SmsCharactersService {
-    void smsCharacters(Account account ,JsonResponseMsg result, ReqBody reqBody, List<SmsPlatform> smsPlatformsCharacters, List<String> LT, List<String> YD, List<String> DX);
+    void smsCharacters(Account account ,JsonResponseMsg result, ReqBody reqBody, List<SmsPlatform> smsPlatformsCharacters);
 }

@@ -5,10 +5,12 @@ import com.cunyun.smsforeign.common.*;
 import com.cunyun.smsforeign.dal.ReqBody;
 import com.cunyun.smsforeign.dal.dao.SmsPlatformMapper;
 import com.cunyun.smsforeign.dal.dao.SmsSendDetailsMapper;
+import com.cunyun.smsforeign.dal.dao.SmsSendRecordMapper;
 import com.cunyun.smsforeign.dal.dao.SmsSendTaskMapper;
 import com.cunyun.smsforeign.dal.model.Account;
 import com.cunyun.smsforeign.dal.model.SmsPlatform;
 import com.cunyun.smsforeign.dal.model.SmsSendDetails;
+import com.cunyun.smsforeign.dal.model.SmsSendRecord;
 import com.cunyun.smsforeign.dal.sevice.SunJianServer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -44,7 +46,8 @@ public class SunJianServerImpl implements SunJianServer {
     private SmsSendDetailsMapper smsSendDetailsMapper;
     @Resource
     private SmsPlatformMapper smsPlatformMapper;
-
+    @Resource
+    private SmsSendRecordMapper smsSendRecordMapper;
     //普通短信模板申请
     @Override
     public void smsCharactersSend(Account account,JsonResponseMsg result, ReqBody reqBody) {
@@ -60,16 +63,12 @@ public class SunJianServerImpl implements SunJianServer {
     }
 
     public void insertSql(ReqBody reqBody,JsonResponseMsg result,Account account,String code,Integer smsType){
-        String mobileid = reqBody.getMobile();
             Date date = new Date();
-            List<SmsSendDetails> list = new ArrayList<>();
             SmsPlatform smsPlatform =  smsPlatformMapper.queryByCode(code,smsType);
-            String[] mobiles = mobileid.split(",");
-            for (String s:mobiles) {
                 SmsSendDetails smsSendDetails = new SmsSendDetails();
                 smsSendDetails.setAdminId(account.getAccountId());
                 smsSendDetails.setCreateTime(date);
-                smsSendDetails.setIsSend(0);
+//                smsSendDetails.setIsSend(0);
                 if("2".equals(reqBody.getType())){
                     smsSendDetails.setExtVideoId(2);
                 }else if("1".equals(reqBody.getType())){
@@ -79,12 +78,10 @@ public class SunJianServerImpl implements SunJianServer {
                 smsSendDetails.setCharacteristic(reqBody.getCharacteristic());
                 smsSendDetails.setIsEmploy(0);
                 smsSendDetails.setContent(reqBody.getContent());
-                smsSendDetails.setMobile(s);
+//                smsSendDetails.setMobile(reqBody.getMobile());
                 smsSendDetails.setSupplierCode(code);
                 smsSendDetails.setCost(smsPlatform.getPrice());
-                list.add(smsSendDetails);
-        }
-        smsSendDetailsMapper.insertByBatch(list);
+                smsSendDetailsMapper.insertSelective(smsSendDetails);
     }
 
     /**
@@ -142,7 +139,7 @@ public class SunJianServerImpl implements SunJianServer {
                 StringBody title = new StringBody(reqBody.getTitle(),charset);
                 reqEntity.addPart("msg_title", title);
                 //签名
-                StringBody sign = new StringBody("浙江完美在线",charset);
+                StringBody sign = new StringBody("欢迎使用",charset);
                 reqEntity.addPart("msg_sign", sign);
             }
 
@@ -172,7 +169,7 @@ public class SunJianServerImpl implements SunJianServer {
                     reqBody.setCharacteristic(object1.getString("msgId"));
                 }
                 result.setCode(200);
-                result.setMsg("已经发送到运营商那边，审核完后会自动下发");
+                result.setMsg("模板申请已经提交到运营商");
             }else{
                 result.setCode(-101);
                 result.setMsgId("");
@@ -233,6 +230,61 @@ public class SunJianServerImpl implements SunJianServer {
         }
         insertSql(reqBody,result,account,SmsPlatformCode.SUN_JIAN_CODE,2);
     }
-
+    /**
+     * 短信下发
+     */
+    public  String send(String sendUrl,String loginname,String password,String content,String mobileid,Integer id){
+        String resString ="";
+        String arrs[] = mobileid.split(",");
+        List<SmsSendRecord> list = new ArrayList<>();
+        for (String arr:arrs) {
+            //1:创建一个httpclient对象
+            HttpClient httpclient = new DefaultHttpClient();
+            Charset charset = Charset.forName("gbk");//设置编码
+            try {
+                //2：创建http的发送方式对象，是GET还是post
+                HttpPost httppost = new HttpPost(sendUrl);
+                //3：创建要发送的实体，就是key-value的这种结构
+                MultipartEntity reqEntity = new MultipartEntity();
+                StringBody name = new StringBody(loginname,charset);//填写分配帐户名
+                StringBody pwd = new StringBody(password,charset);//填写分配密码
+                StringBody contentValue = new StringBody(content,charset);
+                StringBody mobileids = new StringBody(arr,charset);
+                StringBody flowid = new StringBody(UUID.randomUUID().toString().replaceAll("-", ""),charset);
+                reqEntity.addPart("loginname", name);
+                reqEntity.addPart("password", pwd);
+                reqEntity.addPart("content", contentValue);
+                reqEntity.addPart("mobileid", mobileids);
+                reqEntity.addPart("flowid", flowid);
+                httppost.setEntity(reqEntity);
+                //4：执行httppost对象，从而获得信息
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity resEntity = response.getEntity();
+                //获得返回来的信息，转化为字符串string
+                resString = EntityUtils.toString(resEntity);
+            } catch (UnsupportedEncodingException e) {
+                log.error("调用移动发短信接口失败");
+                e.printStackTrace();
+            } catch (IllegalStateException e) {
+                log.error("调用移动发短信接口失败");
+                e.printStackTrace();
+            } catch (IOException e) {
+                log.error("调用移动发短信接口失败");
+                e.printStackTrace();
+            } finally {
+                try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
+            }
+            SmsSendRecord smsSendRecord = new SmsSendRecord();
+            smsSendRecord.setMobile(arr);
+            smsSendRecord.setCreatedTime(new Date());
+            smsSendRecord.setUpdatedTime(new Date());
+            smsSendRecord.setSmsSendDetailsId(id);
+            list.add(smsSendRecord);
+        }
+        if("0".equals(resString)){
+            smsSendRecordMapper.insertList(list);
+        }
+        return resString;
+    }
 
 }
