@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @CrossOrigin
 @RequestMapping("sms")
@@ -69,7 +71,7 @@ public class MainController {
         reqBody.setContent(request.getParameter("content"));
         reqBody.setType(request.getParameter("type"));
         reqBody.setUserName(request.getParameter("userName"));
-//        reqBody.setMobile(request.getParameter("mobile"));
+//      reqBody.setMobile(request.getParameter("mobile"));
         reqBody.setPassword(request.getParameter("password"));
         reqBody.setTitle(request.getParameter("title"));
         reqBody.setSign(request.getParameter("sign"));
@@ -209,7 +211,9 @@ public class MainController {
      */
     @ResponseBody
     @RequestMapping(value = "send" ,method = RequestMethod.POST)
-    public JsonResponseMsg send(String Characteristic,String mobiles,String userName,String pwd) {
+    public JsonResponseMsg send(String Characteristic,String mobiles,String userName) {
+        System.out.println("手机号mobiles"+mobiles);
+        System.out.println("手机号mobiles长度"+mobiles.length());
         JsonResponseMsg result = new JsonResponseMsg();
         if(StringUtils.isEmpty(Characteristic)){
             return  result.fill(JsonResponseMsg.CODE_FAIL,"请传入模板code","");
@@ -219,11 +223,11 @@ public class MainController {
         }
         //判断账号是否合法
         Account account = accountSerivce.queryByUserName(userName);
-        if(account==null || !account.getPwd().equals(pwd)){
-            return  result.fill(JsonResponseMsg.CODE_FAIL,"账号或者密码错误","");
+        if(account==null){
+            return  result.fill(JsonResponseMsg.CODE_FAIL,"账号不存在","");
         }
         //手机号码判断归属运营商,目前只支持；联通和移动的
-        String[] mobileArr = mobiles.split(",");
+        String[] mobileArr =mobiles.split(",");
         String LT = "";
         String YD = "";
         String DX = "";
@@ -267,7 +271,6 @@ public class MainController {
                     String loginnameCharacters = propAccessorUtils.getProperties("sunjian_characters_loginname");
                     String passwordCharacters = propAccessorUtils.getProperties("sunjian_characters_pwd");
                     String send = "";
-
                         if(smsSendDetails.getExtVideoId()==1){//文字短信下发
                             send=sunJianServer.send(sendurl,loginnameCharacters,passwordCharacters,characteristic,YD,smsSendDetails.getId());
                         }else if(smsSendDetails.getExtVideoId()==2){//视频短信下发
@@ -275,12 +278,13 @@ public class MainController {
                         }
                         if(!"0".equals(send)){
                             log.error("笋尖下发短信接口失败");
-                            return result.fill(JsonResponseMsg.CODE_FAIL,"下发成功失败","");
+                            return result.fill(JsonResponseMsg.CODE_FAIL,"移动运营商下发失败","");
                         }
                 }
 
            }else if(SmsPlatformCode.MU_CHEN_CODE.equals(smsSendDetails.getSupplierCode())){//牧尘的模板,目前只可以发送视频
                if(!StringUtils.isEmpty(LT)){
+                   System.out.println("联通手机号:"+LT);
                    String key = propAccessorUtils.getProperties("mucheng_key");
                    String username = propAccessorUtils.getProperties("mucheng_username");
                    String sendUrl = propAccessorUtils.getProperties("mucheng_sen");
@@ -290,7 +294,7 @@ public class MainController {
                    muChenService.send(key,sendUrl,username,taskModel,smsSendDetails.getId());
                    if(!"0".equals(taskModel.getCode())){
                        log.error("牧尘下发短信接口失败");
-                       return result.fill(JsonResponseMsg.CODE_FAIL,"下发成功失败","");
+                       return result.fill(JsonResponseMsg.CODE_FAIL,"联通运营商下发失败","");
                    }
                }
            }
@@ -311,11 +315,59 @@ public class MainController {
         SmsSendDetails smsSendDetails = smsSendDetailsMapper.queryBymsId(msId);
         Map<String,Object> map = new HashMap<>();
         if(smsSendDetails!=null){
-            map.put("isSend",smsSendDetails.getIsSend());
             map.put("assessor",smsSendDetails.getAssessor());
         }else {
             return result.fill(JsonResponseMsg.CODE_SUCCESS,"未查询到改短信内容","");
         }
         return result.fill(JsonResponseMsg.CODE_SUCCESS,"查询成功",map);
     }
+
+
+    public  String replaceBlank(String str) {
+        String dest = "";
+        if (str!=null) {
+            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+            Matcher m = p.matcher(str);
+            dest = m.replaceAll("");
+        }
+        return dest;
+    }
+
+
+    public static String getEncoding(String str) {
+        String encode = "GB2312";
+        try {
+            if (str.equals(new String(str.getBytes(encode), encode))) {
+                String s = encode;
+                return s;
+            }
+        } catch (Exception exception) {
+        }
+        encode = "ISO-8859-1";
+        try {
+            if (str.equals(new String(str.getBytes(encode), encode))) {
+                String s1 = encode;
+                return s1;
+            }
+        } catch (Exception exception1) {
+        }
+        encode = "UTF-8";
+        try {
+            if (str.equals(new String(str.getBytes(encode), encode))) {
+                String s2 = encode;
+                return s2;
+            }
+        } catch (Exception exception2) {
+        }
+        encode = "GBK";
+        try {
+            if (str.equals(new String(str.getBytes(encode), encode))) {
+                String s3 = encode;
+                return s3;
+            }
+        } catch (Exception exception3) {
+        }
+        return "";
+    }
+
 }

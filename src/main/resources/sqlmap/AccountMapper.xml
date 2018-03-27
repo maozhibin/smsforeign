@@ -199,6 +199,6 @@
     FROM
         account
     WHERE
-     username = #{username,jdbcType=VARCHAR}
+     username = #{userName,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -139,7 +139,7 @@ public class SunJianServerImpl implements SunJianServer {
                 StringBody title = new StringBody(reqBody.getTitle(),charset);
                 reqEntity.addPart("msg_title", title);
                 //签名
-                StringBody sign = new StringBody("欢迎使用",charset);
+                StringBody sign = new StringBody("视频短信测试",charset);
                 reqEntity.addPart("msg_sign", sign);
             }
 

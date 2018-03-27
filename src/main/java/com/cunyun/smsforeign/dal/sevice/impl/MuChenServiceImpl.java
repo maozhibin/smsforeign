@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -150,12 +152,13 @@ public class MuChenServiceImpl implements MuChenService {
         try {
             List<SmsSendRecord> list = new ArrayList<>();
             for (String tel:tels) {
+                System.out.println("TEL手机号:"+tel);
                     //用户接口秘钥 + 参数url
                     String sign =  key + "/api/send?";
                     TreeMap<String, String> t = new TreeMap<String, String>();
                     t.put("username", username);//用户名
                     t.put("sequenceNumber", get24UUID());
-                    t.put("userNumber",model.getMobile());
+                    t.put("userNumber",tel);
                     t.put("id", model.getCharacteristic());
                     t.put("timestamp", new Date().getTime()+"");
                     String _sign = MuChenUtil.createSign(t, sign);
@@ -174,13 +177,17 @@ public class MuChenServiceImpl implements MuChenService {
                     smsSendRecord.setSmsSendDetailsId(id);
                     list.add(smsSendRecord);
             }
-            smsSendRecordMapper.insertList(list);
+            if("0".equals(model.getCode())){
+                smsSendRecordMapper.insertList(list);
+            }
             } catch (Exception e) {
                 e.getStackTrace();
             }
 
 
     }
+
+
 
     public  String get24UUID(){
         UUID id=UUID.randomUUID();

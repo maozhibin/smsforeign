@@ -1,6 +1,7 @@
 package com.cunyun.smsforeign.dal.dao;
 
 import com.cunyun.smsforeign.dal.model.Account;
+import org.apache.ibatis.annotations.Param;
 
 public interface AccountMapper {
     int insert(Account record);
@@ -13,5 +14,5 @@ public interface AccountMapper {
 
     int updateByPrimaryKey(Account record);
 
-    Account queryByUserName(String userName);
+    Account queryByUserName(@Param("userName") String userName);
 }
